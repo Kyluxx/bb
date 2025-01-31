@@ -1,0 +1,29 @@
+{
+  "name": "baileysk",
+  "version": "1.0.0",
+  "description": "Testing baileys @kyluxx",
+  "main": "index.js",
+  "scripts": {
+    "test": "index.js",
+    "dev": "npx ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kyluxx/bb.git"
+  },
+  "author": "kyluxx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kyluxx/bb/issues"
+  },
+  "homepage": "https://github.com/Kyluxx/bb#readme",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.9",
+    "dotenv": "^16.4.7",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.0",
+    "typescript": "^5.7.3"
+  }
+}
