@@ -110,7 +110,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").s
           console.error("❌ Failed to get pairing code:", err);
       }
   }
-
+ await delay(20000)
   sock.ev.on("connection.update", async (update) => {
     console.log("Connection Update:", update);
     const { connection } = update;
