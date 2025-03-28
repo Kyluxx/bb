@@ -82,11 +82,10 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").s
   const sock = makeWASocket({
       version,
       logger,
-      auth: state,
-      /*{
+      auth: {
         creds: state.creds,
         keys: makeCacheableSignalKeyStore(state.keys, logger),
-      },*/
+      },
       printQRInTerminal: false,
       msgRetryCounterCache,
       generateHighQualityLinkPreview: true,
@@ -105,12 +104,12 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").s
           const code = await sock.requestPairingCode(phoneNumber);
           console.log(`\n ====================== \n Pairing Code: ${code} \n ====================== \n `);
            console.log("⏳ Waiting  for pairing...");
-           //await delay(20000); // Tunggu 20 detik sebelum lanjut
+           await delay(20000); // Tunggu 20 detik sebelum lanjut
       } catch (err) {
           console.error("❌ Failed to get pairing code:", err);
       }
   }
- await delay(20000)
+ 
   sock.ev.on("connection.update", async (update) => {
     console.log("Connection Update:", update);
     const { connection } = update;
@@ -128,7 +127,8 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").s
         console.error(`❌ Connection closed. Retrying in 5 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
         //delay(15000);
         setTimeout(() => {
-          //connectToWhatsApp();
+          
+          connectToWhatsApp();
         }, 5000 )
     }
   });
