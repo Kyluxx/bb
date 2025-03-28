@@ -111,7 +111,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.101632066
 
   sock.ev.on("connection.update", async (update) => {
     console.log("Connection Update:", update);
-    const { connection, lastDisconnect } = update;
+    const { connection } = update;
     
     if (connection === "close") {
         reconnectAttempts++;
@@ -260,7 +260,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.101632066
   
 }
 
-connectToWhatsApp();
+//connectToWhatsApp();
 
 }catch(e){
   console.log("Errpr occured: ", e);
