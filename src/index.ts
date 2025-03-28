@@ -74,8 +74,10 @@ try{
     
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
-  const { version, isLatest } = await fetchLatestBaileysVersion();
-  console.log(`\n [/] using WA v${version.join('.')}, isLatest: ${isLatest}`);
+  const { currentVersion } = await (await fetch("https://cdn.jsdelivr.net/gh/wppconnect-team/wa-version@main/versions.json")).json();
+const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.1016320664").split(".");
+
+  console.log(`\n [/] using WA v${version.join('.')}`);
 
   const sock = makeWASocket({
       version,
@@ -88,7 +90,8 @@ async function connectToWhatsApp() {
       msgRetryCounterCache,
       generateHighQualityLinkPreview: true,
       getMessage,
-      cachedGroupMetadata: async (jid) => groupCache.get(jid)
+      cachedGroupMetadata: async (jid) => groupCache.get(jid),
+      browser: Browsers.macOS("Chrome")
   });
 
   store?.bind(sock.ev)
@@ -96,7 +99,7 @@ async function connectToWhatsApp() {
 
   // ✅ Fix: Ensure Pairing Code is Requested
   if (usePairingCode && !sock.authState.creds.registered) {
-      const phoneNumber = await question(" [?] Insert your phone number: "); // Replace with your phone number
+      const phoneNumber = "6287883818502" // Replace with your phone number
       try {
           const code = await sock.requestPairingCode(phoneNumber);
           console.log(`\n ====================== \n Pairing Code: ${code} \n ====================== \n `);
