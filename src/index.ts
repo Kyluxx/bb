@@ -75,7 +75,7 @@ try{
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
   const { currentVersion } = await (await fetch("https://cdn.jsdelivr.net/gh/wppconnect-team/wa-version@main/versions.json")).json();
-const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.1016320664").split(".");
+const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split(".");
 
   console.log(`\n [/] using WA v${version.join('.')}`);
 
@@ -120,7 +120,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.101632066
             process.exit(1); // Stop script
         }
         console.error(`❌ Connection closed. Retrying in 15 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
-        await delay(15000);
+        delay(15000);
         connectToWhatsApp();
     } else if (connection === "open") {
         console.log(" [✅] Connected to WhatsApp using Pairing Code!");
