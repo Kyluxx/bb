@@ -14,7 +14,7 @@ const maxAttempts = 3;
 let originalSender: string;
 let accepter: string;
 
-const usePairingCode = process.argv.includes('--use-pairing-code')
+const usePairingCode = true // process.argv.includes('--use-pairing-code')
 
 const groupCache = new NodeCache({stdTTL: 5 * 60, useClones: false})
 const msgRetryCounterCache = new NodeCache()
