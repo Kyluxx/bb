@@ -90,8 +90,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.101632066
       msgRetryCounterCache,
       generateHighQualityLinkPreview: true,
       getMessage,
-      cachedGroupMetadata: async (jid) => groupCache.get(jid),
-      browser: Browsers.macOS("Chrome")
+      cachedGroupMetadata: async (jid) => groupCache.get(jid)
   });
 
   store?.bind(sock.ev)
