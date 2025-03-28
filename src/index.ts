@@ -112,6 +112,10 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
   sock.ev.on("connection.update", async (update) => {
     console.log("Connection Update:", update);
     const { connection } = update;
+    if (connection === "open") {
+        console.log(" [✅] Connected to WhatsApp using Pairing Code!");
+        reconnectAttempts = 0; // Reset attempts on success
+    }
     
     if (connection === "close") {
         reconnectAttempts++;
@@ -124,9 +128,6 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
         setTimeout(() => {
           connectToWhatsApp();
         }, 15000 )
-    } else if (connection === "open") {
-        console.log(" [✅] Connected to WhatsApp using Pairing Code!");
-        reconnectAttempts = 0; // Reset attempts on success
     }
   });
 
