@@ -1,4 +1,4 @@
-import makeWASocket, { useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore, WAMessageContent, WAMessageKey, proto, makeInMemoryStore, AnyMessageContent, delay, WAMessage } from "@whiskeysockets/baileys";
+import makeWASocket, { useMultiFileAuthState, fetchLatestBaileysVersion, makeCacheableSignalKeyStore, WAMessageContent, WAMessageKey, proto, makeInMemoryStore, AnyMessageContent, delay, WAMessage, Browsers } from "@whiskeysockets/baileys";
 import NodeCache from 'node-cache'
 import P from 'pino'
 import readline from 'readline'
