@@ -120,8 +120,10 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
             process.exit(1); // Stop script
         }
         console.error(`❌ Connection closed. Retrying in 15 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
-        delay(15000);
-        connectToWhatsApp();
+        //delay(15000);
+        setTimeout(() => {
+          connectToWhatsApp();
+        }, 15000 )
     } else if (connection === "open") {
         console.log(" [✅] Connected to WhatsApp using Pairing Code!");
         reconnectAttempts = 0; // Reset attempts on success
