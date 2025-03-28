@@ -102,8 +102,8 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
       try {
           const code = await sock.requestPairingCode(phoneNumber);
           console.log(`\n ====================== \n Pairing Code: ${code} \n ====================== \n `);
-          // console.log("⏳ Waiting 20 seconds for pairing...");
-          // await delay(20000); // Tunggu 20 detik sebelum lanjut
+           console.log("⏳ Waiting 20 seconds for pairing...");
+           await delay(20000); // Tunggu 20 detik sebelum lanjut
       } catch (err) {
           console.error("❌ Failed to get pairing code:", err);
       }
