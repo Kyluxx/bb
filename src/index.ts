@@ -74,7 +74,7 @@ try{
     
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
-  const { currentVersion } = await fetchLatestBaileysVersion();
+  const { currentVersion, isLatest } = await fetchLatestBaileysVersion();
 const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").split(".");
 
   console.log(`\n [/] using WA v${version.join('.')}`);
