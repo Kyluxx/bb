@@ -74,7 +74,7 @@ try{
     
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
-  const { currentVersion } = await (await fetch("https://cdn.jsdelivr.net/gh/wppconnect-team/wa-version@main/versions.json")).json();
+  const { currentVersion } = await fetchLatestBaileysVersion();
 const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").split(".");
 
   console.log(`\n [/] using WA v${version.join('.')}`);
@@ -103,7 +103,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").s
       try {
           const code = await sock.requestPairingCode(phoneNumber);
           console.log(`\n ====================== \n Pairing Code: ${code} \n ====================== \n `);
-           console.log("⏳ Waiting  for pairing...");
+           console.log("⏳ Waiting for pairing...");
            await delay(20000); // Tunggu 20 detik sebelum lanjut
       } catch (err) {
           console.error("❌ Failed to get pairing code:", err);
