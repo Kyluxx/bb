@@ -26,7 +26,7 @@ const connectToWhatsapp = async () => {
 
     }
 
-    sock.ev.on("connection.update", ({connection, lastDisconnect}) => {
+    sock.ev.on("connection.update", ({connection}) => {
         if (connection === "close") {
             const shouldReconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
 
