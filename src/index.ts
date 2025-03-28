@@ -10,7 +10,7 @@ import mathSolver from "./function/mathsolver";
 dotenv.config();
 
 let reconnectAttempts = 0;
-const maxAttempts = 3;
+const maxAttempts = 10;
 let originalSender: string;
 let accepter: string;
 
@@ -123,11 +123,11 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
             console.error("❌ Max reconnect attempts reached. Exiting.");
             process.exit(1); // Stop script
         }
-        console.error(`❌ Connection closed. Retrying in 15 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
+        console.error(`❌ Connection closed. Retrying in 5 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
         //delay(15000);
         setTimeout(() => {
           connectToWhatsApp();
-        }, 15000 )
+        }, 5000 )
     }
   });
 
