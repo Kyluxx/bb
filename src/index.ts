@@ -260,7 +260,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.3000.101632066
   
 }
 
-//connectToWhatsApp();
+connectToWhatsApp();
 
 }catch(e){
   console.log("Errpr occured: ", e);
