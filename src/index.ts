@@ -75,22 +75,24 @@ try{
 async function connectToWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info');
   const { currentVersion } = await (await fetch("https://cdn.jsdelivr.net/gh/wppconnect-team/wa-version@main/versions.json")).json();
-const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split(".");
+const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "Not Detected").split(".");
 
   console.log(`\n [/] using WA v${version.join('.')}`);
 
   const sock = makeWASocket({
       version,
       logger,
-      auth: {
+      auth: state,
+      /*{
         creds: state.creds,
         keys: makeCacheableSignalKeyStore(state.keys, logger),
-      },
+      },*/
       printQRInTerminal: false,
       msgRetryCounterCache,
       generateHighQualityLinkPreview: true,
       getMessage,
-      cachedGroupMetadata: async (jid) => groupCache.get(jid)
+      cachedGroupMetadata: async (jid) => groupCache.get(jid),
+      browser: Browsers.ubuntu("Chrome")
   });
 
   store?.bind(sock.ev)
@@ -102,8 +104,8 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
       try {
           const code = await sock.requestPairingCode(phoneNumber);
           console.log(`\n ====================== \n Pairing Code: ${code} \n ====================== \n `);
-           console.log("⏳ Waiting 20 seconds for pairing...");
-           await delay(20000); // Tunggu 20 detik sebelum lanjut
+           console.log("⏳ Waiting  for pairing...");
+           //await delay(20000); // Tunggu 20 detik sebelum lanjut
       } catch (err) {
           console.error("❌ Failed to get pairing code:", err);
       }
@@ -126,7 +128,7 @@ const version = (currentVersion.match(/\d+\.\d+\.\d+/)?.[0] || "2.2413.1").split
         console.error(`❌ Connection closed. Retrying in 5 seconds... (Attempt ${reconnectAttempts}/${maxAttempts})`);
         //delay(15000);
         setTimeout(() => {
-          connectToWhatsApp();
+          //connectToWhatsApp();
         }, 5000 )
     }
   });
