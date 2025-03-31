@@ -5,9 +5,20 @@ import {
     DisconnectReason,
     Browsers,
     delay,
-    AnyMessageContent
+    AnyMessageContent,
+    WAMessageContent,
+    WAMessageKey,
+    proto,
+    makeInMemoryStore,
 } from "@whiskeysockets/baileys";
 import pino from "pino";
+
+const logger = pino({ timestamp: () => `,"time":"${new Date().toJSON()}"` }, pino.destination('./wa-logs.txt'))
+const store = makeInMemoryStore({ logger })
+store?.readFromFile('./baileys_store_multi.json')
+setInterval(() => {
+	store?.writeToFile('./baileys_store_multi.json')
+}, 10_000)
 
 const connectToWhatsapp = async () => {
     const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -17,7 +28,8 @@ const connectToWhatsapp = async () => {
         auth: state,
         logger: pino({level: "fatal"}),
         generateHighQualityLinkPreview: true,
-        browser: Browsers.macOS("chrome")
+        browser: Browsers.macOS("chrome"),
+        
     });
 
     if (!sock.authState.creds.registered) {
@@ -44,11 +56,17 @@ const connectToWhatsapp = async () => {
 
 
     sock.ev.on("messages.upsert", async (m) => {
-      const TS = Date.now()
-      //console.log(m)
       const msg = m.messages[0];
       const jid = msg.key.remoteJid!
+      let quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation || ''
+      
+      const TS = Date.now()
+      console.log(m)
       console.log(msg)
+      console.log(msg.message?.extendedTextMessage)
+      console.log(msg.message?.messageContextInfo)
+      console.log(m.messages)
+
       const text = msg.message?.conversation ? msg.message.conversation : msg.message?.extendedTextMessage ? msg.message?.extendedTextMessage?.text : ''
       console.log(`\n ====== Text ====== \n [+] ${text}\n ==================`)
 
@@ -147,7 +165,19 @@ https://chat.whatsapp.com/LAa2eLl5M8t3auGHPE58HZ
 `}, jid, false, msg
   )
           break;
-        
+        case (text?.startsWith('!dm')):
+          if(quoted){
+            
+            let list = (await sock.groupMetadata(jid)).participants
+            console.log(list)
+            list.forEach(o => {
+              if(o.admin == null){
+                sock.sendMessage(o.id, {text: quoted})
+              }
+            })
+            
+          }
+          break;
       }
 
     })
@@ -171,7 +201,13 @@ https://chat.whatsapp.com/LAa2eLl5M8t3auGHPE58HZ
 connectToWhatsapp()
 
 
-  
+async function getMessage(key: WAMessageKey): Promise<WAMessageContent | undefined> {
+  if(store) {
+      const msg = await store.loadMessage(key.remoteJid!, key.id!)
+      return msg?.message || undefined;
+  }
+  return proto.Message.fromObject({});
+}
 
 
 
