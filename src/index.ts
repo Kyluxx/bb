@@ -20,6 +20,21 @@ setInterval(() => {
 	store?.writeToFile('./baileys_store_multi.json')
 }, 10_000)
 
+
+let tempState: {
+  pushGbStr: string;
+  pushGbJid: string;
+  targetSet: boolean;
+  arrList: string[],
+  c: number
+} = {
+  pushGbStr: '',
+  pushGbJid: '',
+  targetSet: false,
+  arrList: [],
+  c: 0,
+};
+
 const connectToWhatsapp = async () => {
     const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
 
@@ -34,7 +49,7 @@ const connectToWhatsapp = async () => {
 
     if (!sock.authState.creds.registered) {
         setTimeout(async () => {
-            const pairingCode = await sock.requestPairingCode("6287883818502")
+            const pairingCode = await sock.requestPairingCode("6285715377912")
             console.log(`\n \n CODE : ${pairingCode}`)
         }, 3000);
 
@@ -58,7 +73,9 @@ const connectToWhatsapp = async () => {
     sock.ev.on("messages.upsert", async (m) => {
       const msg = m.messages[0];
       const jid = msg.key.remoteJid!
-      let quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation || ''
+      const quoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage?.conversation || ''
+      const rMsg = msg.message?.reactionMessage?.text
+      let i: string | number | NodeJS.Timeout | undefined
       
       const TS = Date.now()
       console.log(m)
@@ -66,6 +83,7 @@ const connectToWhatsapp = async () => {
       console.log(msg.message?.extendedTextMessage)
       console.log(msg.message?.messageContextInfo)
       console.log(m.messages)
+      //const gr = sock.groupMetadata
 
       const text = msg.message?.conversation ? msg.message.conversation : msg.message?.extendedTextMessage ? msg.message?.extendedTextMessage?.text : ''
       console.log(`\n ====== Text ====== \n [+] ${text}\n ==================`)
@@ -138,8 +156,75 @@ let rStr =
         await sock.sendMessage(jid, {text: rStr})
         await sock.sendMessage(jid, {text: fStr, mentions: gRand})
         //await sock.sendMessage(jid, {text: gRand[1]})
+      } else if(rMsg === '🚹'){
+
+        tempState.targetSet = true
+        tempState.pushGbJid = jid
+        sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Target Set.'})
+
+      } else if(text === "!pushstr"){
+
+        if(!quoted){
+          sock.sendMessage(jid, {text: 'Please reply to the message you want to push.'})
+          return
+        }
+
+        tempState.pushGbStr = quoted
+        sock.sendMessage(jid, {text: `Push Messages Set To: \n ${tempState.pushGbStr}`})
+
+      } else if(text === "!getList"){
+
+        if(tempState.targetSet && tempState.pushGbStr && tempState.pushGbJid){
+          const list = sock.groupMetadata(tempState.pushGbJid)
+          ;(await list).participants.forEach(u => {
+            if (u.admin == null) tempState.arrList.push(u.id)
+          })
+        }
+          sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'List get.'})
+          
+
+      } else if (text === "!status"){
+
+        sock.sendMessage(jid, {text: `Target: ${tempState.pushGbJid ? "SET" : "NOT SET"} \n Message: ${tempState.pushGbStr ? "SET" : "NOT SET"} \n List: ${tempState.arrList.length > 0 ? "SET" : "NOT SET"}`})
+
+      } else if (text === "!progress"){
+
+        sock.sendMessage(jid, {text: `Progress: ${tempState.c}/${tempState.arrList.length}\n Estimated Time: ${tempState.arrList.length * 7}s`})
+      }else if (text === "!LAUNCH"){
+        
+        if(!tempState.pushGbStr || tempState.arrList.length <= 0 || !tempState.targetSet) return 
+
+        sock.sendMessage(jid, {text: `Sending DMs... \n Total Member: ${tempState.arrList.length} \n Estimated Time : ${tempState.arrList.length * 7}s`})
+        
+        i = setInterval(() => {
+          if(tempState.c % 25 === 0) delay(Math.floor(Math.random()*20000+10000))
+          sock.sendMessage(tempState.arrList[tempState.c], {text: tempState.pushGbStr})
+          tempState.c++
+          if(tempState.c >= tempState.arrList.length) {
+            clearInterval(i)
+            sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Completed. \n Total Member: ' + tempState.arrList.length + '\n Sent: ' + tempState.c})
+          }
+          
+        }, Math.floor(Math.random()*5000+3000))
+      } else if (text === "!kill"){
+        clearInterval(i)
+        sock.sendMessage(jid, {text: 'Process Stopped.'})
+      } else if (text === '!clear'){
+        tempState.arrList = []
+        tempState.c = 0
+        tempState.pushGbJid = ''
+        tempState.pushGbStr = ''
+        sock.sendMessage(jid, {text: 'Cleared.'})
       }
-      
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
+      ////////////////////////////////
       ////////////////////////////////
       
       if (!msg || msg.key.fromMe || !msg.message) return;
@@ -164,19 +249,6 @@ https://chat.whatsapp.com/LAa2eLl5M8t3auGHPE58HZ
 *NUNGGU OPEN ? SAMBIL JOIN GB !*
 `}, jid, false, msg
   )
-          break;
-        case (text?.startsWith('!dm')):
-          if(quoted){
-            
-            let list = (await sock.groupMetadata(jid)).participants
-            console.log(list)
-            list.forEach(o => {
-              if(o.admin == null){
-                sock.sendMessage(o.id, {text: quoted})
-              }
-            })
-            
-          }
           break;
       }
 
@@ -214,6 +286,9 @@ async function getMessage(key: WAMessageKey): Promise<WAMessageContent | undefin
 //I use Pairing code for connecting
 
 // DUMP code
+
+
+
           /*
             const shouldReconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut;
 
@@ -221,3 +296,19 @@ async function getMessage(key: WAMessageKey): Promise<WAMessageContent | undefin
           */
             //if (shouldReconnect) {
           //};
+
+
+          /*
+        if(quoted){
+          
+          let list = (await sock.groupMetadata(jid)).participants
+          console.log(list)
+          list.forEach(o => {
+            if(o.admin == null){
+              sock.sendMessage(o.id, {text: quoted})
+            }
+          })
+          
+        }
+        
+        */
