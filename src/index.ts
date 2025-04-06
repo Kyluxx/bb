@@ -49,7 +49,7 @@ const connectToWhatsapp = async () => {
 
     if (!sock.authState.creds.registered) {
         setTimeout(async () => {
-            const pairingCode = await sock.requestPairingCode("6285715377912")
+            const pairingCode = await sock.requestPairingCode("6287883818502")
             console.log(`\n \n CODE : ${pairingCode}`)
         }, 3000);
 
@@ -189,15 +189,22 @@ let rStr =
 
       } else if (text === "!progress"){
 
-        sock.sendMessage(jid, {text: `Progress: ${tempState.c}/${tempState.arrList.length}\n Estimated Time: ${tempState.arrList.length * 7}s`})
-      }else if (text === "!LAUNCH"){
+        sock.sendMessage(jid, {text: `Progress: ${tempState.c}/${tempState.arrList.length}\n Estimated Time: ${(tempState.arrList.length - tempState.c) * 6}s`})
+      }else if (text?.startsWith("!LAUNCH")){
+        
+        if(text === "!LAUNCH -r") tempState.arrList.reverse()
+        const textSplit = text.split(" ")
+        if(textSplit[1]) 
         
         if(!tempState.pushGbStr || tempState.arrList.length <= 0 || !tempState.targetSet) return 
 
         sock.sendMessage(jid, {text: `Sending DMs... \n Total Member: ${tempState.arrList.length} \n Estimated Time : ${tempState.arrList.length * 7}s`})
         
         i = setInterval(() => {
-          if(tempState.c % 25 === 0) delay(Math.floor(Math.random()*20000+10000))
+          if(tempState.c % 25 === 0) {
+            sock.sendMessage("62895634600989@s.whatsapp.net", {text: `Progress: ${tempState.c}/${tempState.arrList.length} \n Est: ${(tempState.arrList.length - tempState.c) * 6}s`})
+            delay(Math.floor(Math.random()*20000+10000))
+          }
           sock.sendMessage(tempState.arrList[tempState.c], {text: tempState.pushGbStr})
           tempState.c++
           if(tempState.c >= tempState.arrList.length) {
@@ -215,6 +222,11 @@ let rStr =
         tempState.pushGbJid = ''
         tempState.pushGbStr = ''
         sock.sendMessage(jid, {text: 'Cleared.'})
+      } else if ( text === '!!!' ){
+        
+        const list = await sock.groupMetadata(jid)
+        let arrTags = list.participants.map(u => u.id)
+        sock.sendMessage(jid, {text: "@everyone", mentions: arrTags})
       }
       ////////////////////////////////
       ////////////////////////////////
