@@ -10,6 +10,8 @@ import {
     WAMessageKey,
     proto,
     makeInMemoryStore,
+    WAProto,
+    
 } from "@whiskeysockets/baileys";
 import pino from "pino";
 
@@ -25,14 +27,16 @@ let tempState: {
   pushGbStr: string;
   pushGbJid: string;
   targetSet: boolean;
-  arrList: string[],
-  c: number
+  arrList: string[];
+  c: number;
+  joinSend: boolean;
 } = {
   pushGbStr: '',
   pushGbJid: '',
   targetSet: false,
   arrList: [],
   c: 0,
+  joinSend: true,
 };
 
 const connectToWhatsapp = async () => {
@@ -82,13 +86,47 @@ const connectToWhatsapp = async () => {
       console.log(msg)
       console.log(msg.message?.extendedTextMessage)
       console.log(msg.message?.messageContextInfo)
-      console.log(m.messages)
       //const gr = sock.groupMetadata
 
       const text = msg.message?.conversation ? msg.message.conversation : msg.message?.extendedTextMessage ? msg.message?.extendedTextMessage?.text : ''
       console.log(`\n ====== Text ====== \n [+] ${text}\n ==================`)
 
-      if (msg.key.fromMe && text?.startsWith("!r")){
+      if(m.type === "append" && msg.messageStubType === 27 && tempState.joinSend === true){
+        const num = msg.messageStubParameters![0]
+        const rmjid = "120363401343892352@g.us"
+const inv =
+`Assalamualaikum, Izin share 😇
+
+
+♨️ _*FT CS BY LUXX*_♨️
+
+❗ _*OPEN : Setiap Hari*_
+❗ _*FT CS 11/22/33/44*_
+
+💸 *Fee :* 2K
+💰 *PP REAL :* 6K
+
+💸 *Fee :* 3K
+💰 *PP REAL :* 10K
+
+💸 *Fee :* 4K
+💰 *PP REAL :* 14K
+
+💸 *Fee :* 5K
+💰 *PP REAL :* 17K
+
+♨️ _*FT CS BY LUXX*_ ♨️
+
+
+FT paling worth it cuma disini 😽
+Support GB kecil ini ❤
+
+https://chat.whatsapp.com/LAa2eLl5M8t3auGHPE58HZ`
+
+        if(jid != rmjid) sock.sendMessage(num, {text: inv})
+      }
+
+      if (text?.startsWith("!r")){
         
         let groups = splitAtIndex(text, 3)[1]
         let toMent = groups.split(/\s+/)
@@ -104,10 +142,10 @@ const connectToWhatsapp = async () => {
 `
 > _Diacak secara otomatis_
 
-🔥 ${toMent[0]} *vs* ${toMent[1]}
-🔥 ${toMent[2]} *vs* ${toMent[3]}
+*POT*
 
-_*WAJIB SS HASIL MATCH, NO SS = HOAKS*_
+🔥 P1 ${toMent[0]} *vs* ${toMent[1]}
+🔥 P2 ${toMent[2]} *vs* ${toMent[3]}
 `;
 
 let rStr = 
