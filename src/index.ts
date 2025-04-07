@@ -121,7 +121,7 @@ const inv =
 FT paling worth it cuma disini 😽
 Support GB kecil ini ❤
 
-https://chat.whatsapp.com/LAa2eLl5M8t3auGHPE58HZ`
+https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`
 
         if(jid != rmjid) sock.sendMessage(num, {text: inv})
       }
