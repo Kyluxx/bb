@@ -211,9 +211,9 @@ const connectToWhatsapp = async () => {
         listX = target.length
         sock.sendMessage('62895634600989@s.whatsapp.net', {text: `Sending DMs... \n Total Member: ${target.length} \n Estimated Time : ${target.length * 80}s || ${(target.length * 80) / 60}m || ${((target.length * 80) / 60) / 60}h`})        
         i = setInterval(() => {
-            if(tempState.c % 25 === 0) {
+            if(tempState.c % 25 === 0 && tempState.c != 0) {
               sock.sendMessage("62895634600989@s.whatsapp.net", {text: `Progress: ${tempState.c}/${target.length} \n Est: ${((target.length - tempState.c) * 80)/60}m`})
-              delay(Math.floor(Math.random()*240000+60000))
+              delay(Math.floor(Math.random()* (tempState.CD * 3000)  + (tempState.CD * 1000)))
             }
             if(tempState.arrC === 3) tempState.arrC = 0
             sock.sendMessage(target[tempState.c], {text: invArr[tempState.arrC]})
@@ -224,7 +224,7 @@ const connectToWhatsapp = async () => {
               sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Completed. \n Total Member: ' + target.length + '\n Sent: ' + tempState.c})
             }
             
-          }, Math.floor(Math.random()*75000+45000))
+          }, Math.floor(Math.random()* (tempState.CD * 1000 / 2) + (tempState.CD * 1000)))
   
       }
 
