@@ -123,6 +123,7 @@ let tempState: {
 };
 
 let listX = 0
+let safetyProtocolOff = false
 
 const connectToWhatsapp = async () => {
     const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -201,6 +202,12 @@ const connectToWhatsapp = async () => {
         let sText = text.split(' ')[1]
         tempState.CD = parseInt(sText)
       }
+      
+      if(text === "!SPO"){
+        safetyProtocolOff = true
+        sock.sendMessage(jid, {text: "safetyProtocolOff."})
+      }
+      
 
       if(rMsg === '🚹'){
         let target: string[] = []
@@ -306,11 +313,18 @@ let rStr =
         await sock.sendMessage(jid, {text: rStr})
         await sock.sendMessage(jid, {text: fStr, mentions: gRand})
         //await sock.sendMessage(jid, {text: gRand[1]})
-      } else if(rMsg === '🚹'){
+      } else if(rMsg === '☢️' && safetyProtocolOff){
 
-        // tempState.targetSet = true
-        // tempState.pushGbJid = jid
-        // sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Target Set.'})
+        let target: string[] = []
+        const list = await sock.groupMetadata(jid)
+          list.participants.forEach(u => {
+            if (u.admin === null) target.push(u.id)
+          })
+        sock.sendMessage('62895634600989@s.whatsapp.net', {text: `Sending DMs... \n Total Member: ${target.length} \n `})
+        for(let i = 0; i <= target.length; i++){
+          await sendMessageWTyping({text: invArr[Math.floor(Math.random()*3)]}, target[i], false, undefined)
+        }
+        
 
       } else if(text === "!pushstr"){
 
@@ -325,8 +339,8 @@ let rStr =
       } else if(text === "!getList"){
 
         if(tempState.targetSet && tempState.pushGbStr && tempState.pushGbJid){
-          const list = sock.groupMetadata(tempState.pushGbJid)
-          ;(await list).participants.forEach(u => {
+          const list = await sock.groupMetadata(tempState.pushGbJid)
+          list.participants.forEach(u => {
             if (u.admin == null) tempState.arrList.push(u.id)
           })
         }
@@ -342,8 +356,8 @@ let rStr =
       }else if (text?.startsWith("!LAUNCH")){
         
         if(text === "!LAUNCH -r") tempState.arrList.reverse()
-        const textSplit = text.split(" ")
-        if(textSplit[1]) 
+        const textSplit = text.split(" ")[1]
+        if(textSplit) tempState.c = parseInt(textSplit)
         
         if(!tempState.pushGbStr || tempState.arrList.length <= 0 || !tempState.targetSet) return 
 
@@ -354,7 +368,7 @@ let rStr =
             sock.sendMessage("62895634600989@s.whatsapp.net", {text: `Progress: ${tempState.c}/${tempState.arrList.length} \n Est: ${(tempState.arrList.length - tempState.c) * 6}s`})
             delay(Math.floor(Math.random()*20000+10000))
           }
-          sock.sendMessage(tempState.arrList[tempState.c], {text: tempState.pushGbStr})
+          sock.sendMessage(tempState.arrList[tempState.c], {text: invArr[Math.floor(Math.random()*3)]})
           tempState.c++
           if(tempState.c >= tempState.arrList.length) {
             clearInterval(i)
