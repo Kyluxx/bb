@@ -22,6 +22,83 @@ setInterval(() => {
 	store?.writeToFile('./baileys_store_multi.json')
 }, 10_000)
 
+const invArr = [
+`Assalamualaikum, Izin share 😇
+
+
+♨️ _*FT CS BY LUXX*_♨️
+
+❗ _*OPEN : Setiap Hari*_
+❗ _*FT CS 11/22/33/44*_
+
+💸 *Fee :* 2K
+💰 *PP REAL :* 6K
+
+💸 *Fee :* 3K
+💰 *PP REAL :* 10K
+
+💸 *Fee :* 4K
+💰 *PP REAL :* 14K
+
+💸 *Fee :* 5K
+💰 *PP REAL :* 17K
+
+♨️ _*FT CS BY LUXX*_ ♨️
+
+
+FT paling worth it cuma disini 😽
+Support GB kecil ini ❤
+
+_200+ member_
+https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`,
+
+`Bismillah, Izin share FT Amanah 😇
+
+
+♨️ _*FT CS BY LUXX*_♨️
+
+ _*OPEN : Setiap Hari*_
+ _*FT CS 11/22/33/44*_
+
+💸 *Fee :* 3K
+💰 *PP REAL :* 10K
+
+♨️ _*FT CS BY LUXX*_ ♨️
+
+
+FT paling worth it cuma disini 😽
+Support GB kecil ini ❤
+
+_200+ member_
+https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`,
+
+`Assalamualaikum, Bismillah, Izin share 😇
+
+
+♨️ _*FT CS BY LUXX*_♨️
+
+❗ _*OPEN : Setiap Hari*_
+❗ _*FT CS 11/22/33/44*_
+❗ _*DIJAMIN AMANAH YA LEK*_
+
+💸 *Fee :* 3K
+💰 *PP REAL :* 10K
+
+💸 *Fee :* 4K
+💰 *PP REAL :* 14K
+
+💸 *Fee :* 5K
+💰 *PP REAL :* 17K
+
+♨️ _*FT CS BY LUXX*_ ♨️
+
+
+FT paling untung disini 😽
+Rame = open 24jam ❤
+
+_200+ member_
+https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`
+]
 
 let tempState: {
   pushGbStr: string;
@@ -29,15 +106,23 @@ let tempState: {
   targetSet: boolean;
   arrList: string[];
   c: number;
-  joinSend: boolean;
+  arrC: number;
+  sendInvOnJoin: boolean;
+  sendInvOnEmoji: boolean;
+  CD: number;
 } = {
   pushGbStr: '',
   pushGbJid: '',
   targetSet: false,
   arrList: [],
   c: 0,
-  joinSend: true,
+  arrC: 0,
+  sendInvOnJoin: false,
+  sendInvOnEmoji: false,
+  CD: 60
 };
+
+let listX = 0
 
 const connectToWhatsapp = async () => {
     const { state, saveCreds } = await useMultiFileAuthState("auth_info_baileys");
@@ -91,39 +176,66 @@ const connectToWhatsapp = async () => {
       const text = msg.message?.conversation ? msg.message.conversation : msg.message?.extendedTextMessage ? msg.message?.extendedTextMessage?.text : ''
       console.log(`\n ====== Text ====== \n [+] ${text}\n ==================`)
 
-      if(m.type === "append" && msg.messageStubType === 27 && tempState.joinSend === true){
+      if(text === "!activateOJ"){
+        tempState.sendInvOnJoin = true
+        sock.sendMessage(jid, {text: "OJ Activated"})
+      }
+
+      if(text === "!deactivateOJ"){
+        tempState.sendInvOnJoin = false
+        sock.sendMessage(jid, {text: "OJ Deactivated"})
+      }
+
+      
+      if(text === "!activateEmINV"){
+        tempState.sendInvOnEmoji = true
+        sock.sendMessage(jid, {text: "EmINV Activated"})
+      }
+
+      if(text === "!deactivateEmINV"){
+        tempState.sendInvOnEmoji = false
+        sock.sendMessage(jid, {text: "EmINV Deactivated"})
+      }
+
+      if(text?.startsWith('!setcd')){
+        let sText = text.split(' ')[1]
+        tempState.CD = parseInt(sText)
+      }
+
+      if(rMsg === '🚹'){
+        let target: string[] = []
+        const list = await sock.groupMetadata(jid)
+          list.participants.forEach(u => {
+            if (u.admin === null) target.push(u.id)
+          })
+        listX = target.length
+        sock.sendMessage('62895634600989@s.whatsapp.net', {text: `Sending DMs... \n Total Member: ${target.length} \n Estimated Time : ${target.length * 80}s || ${(target.length * 80) / 60}m || ${((target.length * 80) / 60) / 60}h`})        
+        i = setInterval(() => {
+            if(tempState.c % 25 === 0) {
+              sock.sendMessage("62895634600989@s.whatsapp.net", {text: `Progress: ${tempState.c}/${target.length} \n Est: ${((target.length - tempState.c) * 80)/60}m`})
+              delay(Math.floor(Math.random()*240000+60000))
+            }
+            if(tempState.arrC === 3) tempState.arrC = 0
+            sock.sendMessage(target[tempState.c], {text: invArr[tempState.arrC]})
+            tempState.arrC++
+            if(tempState.c >= target.length) {
+              clearInterval(i)
+              listX = 0
+              sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Completed. \n Total Member: ' + target.length + '\n Sent: ' + tempState.c})
+            }
+            
+          }, Math.floor(Math.random()*75000+45000))
+  
+      }
+
+      if(m.type === "append" && msg.messageStubType === 27 && tempState.sendInvOnJoin === true){
         const num = msg.messageStubParameters![0]
         const rmjid = "120363401343892352@g.us"
-const inv =
-`Assalamualaikum, Izin share 😇
-
-
-♨️ _*FT CS BY LUXX*_♨️
-
-❗ _*OPEN : Setiap Hari*_
-❗ _*FT CS 11/22/33/44*_
-
-💸 *Fee :* 2K
-💰 *PP REAL :* 6K
-
-💸 *Fee :* 3K
-💰 *PP REAL :* 10K
-
-💸 *Fee :* 4K
-💰 *PP REAL :* 14K
-
-💸 *Fee :* 5K
-💰 *PP REAL :* 17K
-
-♨️ _*FT CS BY LUXX*_ ♨️
-
-
-FT paling worth it cuma disini 😽
-Support GB kecil ini ❤
-
-https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`
-
-        if(jid != rmjid) sock.sendMessage(num, {text: inv})
+        if(jid != rmjid) {
+          if(tempState.arrC === 3) tempState.arrC = 0
+          sock.sendMessage(num, {text: invArr[tempState.arrC]})
+          tempState.arrC++
+        }
       }
 
       if (text?.startsWith("!r")){
@@ -196,9 +308,9 @@ let rStr =
         //await sock.sendMessage(jid, {text: gRand[1]})
       } else if(rMsg === '🚹'){
 
-        tempState.targetSet = true
-        tempState.pushGbJid = jid
-        sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Target Set.'})
+        // tempState.targetSet = true
+        // tempState.pushGbJid = jid
+        // sock.sendMessage("62895634600989@s.whatsapp.net", {text: 'Target Set.'})
 
       } else if(text === "!pushstr"){
 
@@ -226,8 +338,7 @@ let rStr =
         sock.sendMessage(jid, {text: `Target: ${tempState.pushGbJid ? "SET" : "NOT SET"} \n Message: ${tempState.pushGbStr ? "SET" : "NOT SET"} \n List: ${tempState.arrList.length > 0 ? "SET" : "NOT SET"}`})
 
       } else if (text === "!progress"){
-
-        sock.sendMessage(jid, {text: `Progress: ${tempState.c}/${tempState.arrList.length}\n Estimated Time: ${(tempState.arrList.length - tempState.c) * 6}s`})
+        sock.sendMessage(jid, {text: `Progress: ${tempState.c}/${listX}\n Estimated Time: ${((listX - tempState.c) * 80)/60}m`})
       }else if (text?.startsWith("!LAUNCH")){
         
         if(text === "!LAUNCH -r") tempState.arrList.reverse()
