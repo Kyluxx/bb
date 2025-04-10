@@ -50,7 +50,7 @@ FT paling worth it cuma disini 😽
 Support GB kecil ini ❤
 
 _200+ member_
-https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`,
+https://chat.whatsapp.com/CY7l3jz9VnY3R5zOdNdkoS`,
 
 `Bismillah, Izin share FT Amanah 😇
 
@@ -70,7 +70,7 @@ FT paling worth it cuma disini 😽
 Support GB kecil ini ❤
 
 _200+ member_
-https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`,
+https://chat.whatsapp.com/CY7l3jz9VnY3R5zOdNdkoS`,
 
 `Assalamualaikum, Bismillah, Izin share 😇
 
@@ -97,7 +97,7 @@ FT paling untung disini 😽
 Rame = open 24jam ❤
 
 _200+ member_
-https://chat.whatsapp.com/EQzppjsHTAl8zqo6jDj6U5`
+https://chat.whatsapp.com/CY7l3jz9VnY3R5zOdNdkoS`
 ]
 
 let tempState: {
